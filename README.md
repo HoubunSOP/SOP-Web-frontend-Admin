@@ -4,25 +4,21 @@
 
 <div align="center">
 
-# 🔭芳文观星台官网前端🌟
-
-
-
-网址：正式(暂未上线) [测试](https://sop.sakurakoi.top)
+# 🔭芳文观星台官网后台前端🌟
 
 </div>
 
 <p align="center">
-  <a href="https://github.com/HoubunSOP/SOP-Web-frontend/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/HoubunSOP/SOP-Web-frontend" alt="license">
+  <a href="https://github.com/HoubunSOP/SOP-Web-frontend-Admin/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/HoubunSOP/SOP-Web-frontend-Admin" alt="license">
   </a>
   <a href="https://app.netlify.com/sites/spiffy-phoenix-0cb8a9/deploys">
     <img src="https://api.netlify.com/api/v1/badges/b12d882b-776e-44e3-a35f-afa249b99909/deploy-status" alt="deploy">
   </a>
-  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend.svg?type=shield"/></a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend-Admin?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend-Admin.svg?type=shield&issueType=license"/></a>
 </p>
 <p align="center">
-<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend.svg?type=large"/></a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend-Admin?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend-Admin.svg?type=large"/></a>
 </p>
 
 ## 使用包
@@ -104,5 +100,5 @@ yarn preview
 
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend-Admin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FHoubunSOP%2FSOP-Web-frontend-Admin?ref=badge_large)
 
