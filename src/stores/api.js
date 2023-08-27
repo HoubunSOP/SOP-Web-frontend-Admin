@@ -2,9 +2,11 @@
 import axios from "axios";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-
+import { useToast } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+const toast = useToast();
 const api = axios.create({
-  baseURL: "",
+  baseURL: "http://127.0.0.1:8000",
   timeout: 5000,
 });
 
@@ -46,6 +48,7 @@ export const post = async (endpoint, data) => {
     return { response, status };
   } catch (error) {
     status.error = true;
+    toast.error("无法post数据，错误url：" + endpoint);
     return { error, status };
   }
 };
@@ -64,6 +67,7 @@ export const put = async (endpoint, data) => {
     return { response, status };
   } catch (error) {
     status.error = true;
+    toast.error("无法put数据，错误url：" + endpoint);
     return { error, status };
   }
 };
@@ -82,6 +86,7 @@ export const get = async (endpoint) => {
     return { response, status };
   } catch (error) {
     status.error = true;
+    toast.error("无法get数据，错误url：" + endpoint);
     return { error, status };
   }
 };

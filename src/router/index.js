@@ -10,7 +10,7 @@ const routes = [
     // Document title tag
     // We combine it with defaultDocumentTitle set in `src/main.js` on router.afterEach hook
     meta: {
-      title: "Dashboard",
+      title: "主页",
     },
     path: "/",
     name: "dashboard",
@@ -54,11 +54,24 @@ const routes = [
   },
   {
     meta: {
-      title: "Tables",
+      title: "文章列表",
     },
-    path: "/tables",
-    name: "tables",
-    component: () => import("@/views/TablesView.vue"),
+    path: "/list/post",
+    component: () => import("@/views/PostTableView.vue"),
+  },
+  {
+    meta: {
+      title: "漫画列表",
+    },
+    path: "/list/comic",
+    component: () => import("@/views/ComicTableView.vue"),
+  },
+  {
+    meta: {
+      title: "文章分类列表",
+    },
+    path: "/list/postcat",
+    component: () => import("@/views/PostCatTableView.vue"),
   },
   {
     meta: {

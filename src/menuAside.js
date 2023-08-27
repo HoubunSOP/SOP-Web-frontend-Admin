@@ -1,27 +1,33 @@
 import {
   mdiMonitor,
   mdiLock,
-  mdiTable,
-  mdiTelevisionGuide,
   mdiBookEdit,
   mdiNoteEdit,
+  mdiFormatListBulletedSquare,
+  mdiFormatListText,
+  mdiFormatListBulletedTriangle,
 } from "@mdi/js";
 
 export default [
   {
     to: "/",
     icon: mdiMonitor,
-    label: "Dashboard",
+    label: "主页",
   },
   {
-    to: "/tables",
-    label: "Tables",
-    icon: mdiTable,
+    to: "/list/post",
+    label: "文章列表",
+    icon: mdiFormatListBulletedSquare,
   },
   {
-    to: "/ui",
-    label: "UI",
-    icon: mdiTelevisionGuide,
+    to: "/list/comic",
+    label: "漫画列表",
+    icon: mdiFormatListText,
+  },
+  {
+    to: "/list/postcat",
+    label: "文章分类列表",
+    icon: mdiFormatListBulletedTriangle,
   },
   {
     to: "/comic/new",
