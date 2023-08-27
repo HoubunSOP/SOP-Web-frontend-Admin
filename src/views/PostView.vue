@@ -4,12 +4,10 @@ import {
   mdiBookEdit,
   mdiFormatTitle,
   mdiCalendarClock,
-  mdiPalette,
   mdiImage,
 } from "@mdi/js";
 import SectionMain from "@/components/SectionMain.vue";
 import CardBox from "@/components/CardBox.vue";
-import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 import BaseDivider from "@/components/BaseDivider.vue";
@@ -21,9 +19,9 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const id = route.params.id;
-let isNewComic = false;
+let isNewPost = false;
 if (id == null) {
-  isNewComic = true;
+  isNewPost = true;
 }
 const getCurrentDate = () => {
   const date = new Date();
@@ -33,15 +31,6 @@ const getCurrentDate = () => {
 
   return `${year}-${month}-${day}`;
 };
-
-const form = reactive({
-  name: "",
-  time: getCurrentDate(),
-  content: "",
-  author: "",
-  cover: "",
-  magazine: "",
-});
 
 const submit = () => {
   if (form.magazine == "" || form.name == "") {
@@ -62,7 +51,7 @@ const formStatusCurrent = ref(0);
 const formStatusOptions = [
   {
     color: "info",
-    title: isNewComic
+    title: isNewPost
       ? "请填写下面的字段后点击保存按钮"
       : "请修改下面的字段后点击保存按钮",
   },
@@ -71,6 +60,20 @@ const formStatusOptions = [
   { color: "warning", title: "正在保存至服务器中..." },
   { color: "danger", title: "保存失败! 请检查是否参数有遗漏" },
 ];
+
+const selectOptions = [
+  { id: 1, label: "Business development" },
+  { id: 2, label: "Marketing" },
+  { id: 3, label: "Sales" },
+];
+
+const form = reactive({
+  name: "",
+  time: getCurrentDate(),
+  content: "",
+  cover: "",
+  category: selectOptions[0],
+});
 </script>
 
 <template>
@@ -78,7 +81,7 @@ const formStatusOptions = [
     <SectionMain>
       <SectionTitleLineWithButton
         :icon="mdiBookEdit"
-        :title="isNewComic ? '添加漫画' : '修改漫画'"
+        :title="isNewPost ? '添加文章' : '修改文章'"
         main
       >
       </SectionTitleLineWithButton>
@@ -92,12 +95,12 @@ const formStatusOptions = [
         </NotificationBarInCard>
         <FormField
           label="标题以及日期"
-          help="第一个为漫画标题，第二个为漫画发布日期"
+          help="第一个为文章标题，第二个为文章发布日期"
         >
           <FormControl
             v-model="form.name"
             :icon="mdiFormatTitle"
-            placeholder="漫画标题"
+            placeholder="文章标题"
           />
           <FormControl
             v-model="form.time"
@@ -106,36 +109,19 @@ const formStatusOptions = [
             placeholder="选择日期"
           />
         </FormField>
-        <FormField label="漫画简介">
+        <FormField label="文章内容">
           <mavon-editor v-model="form.content" />
         </FormField>
         <BaseDivider />
 
-        <FormField label="漫画封面与作者">
-          <FormControl
-            v-model="form.author"
-            :icon="mdiPalette"
-            placeholder="漫画作者"
-          />
+        <FormField label="文章封面与文章分类">
           <FormControl
             v-model="form.cover"
             type="url"
             :icon="mdiImage"
-            placeholder="漫画封面(图片链接)"
+            placeholder="文章封面(图片链接)"
           />
-        </FormField>
-        <FormField label="刊物类型">
-          <FormCheckRadioGroup
-            v-model="form.magazine"
-            name="magazine"
-            type="radio"
-            :options="{
-              kirara: 'Kirara',
-              max: 'MAX',
-              carat: 'Carat',
-              forward: 'Forward',
-            }"
-          />
+          <FormControl v-model="form.category" :options="selectOptions" />
         </FormField>
         <template #footer>
           <BaseButton type="submit" color="info" label="保存" />

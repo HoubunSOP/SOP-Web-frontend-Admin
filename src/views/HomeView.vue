@@ -7,7 +7,6 @@ import {
   mdiChartTimelineVariant,
   mdiMonitorCellphone,
   mdiReload,
-  mdiGithub,
   mdiChartPie,
 } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
@@ -44,22 +43,6 @@ const transactionBarItems = computed(() => mainStore.history);
 <template>
   <LayoutAuthenticated>
     <SectionMain>
-      <SectionTitleLineWithButton
-        :icon="mdiChartTimelineVariant"
-        title="Overview"
-        main
-      >
-        <BaseButton
-          href="https://github.com/justboil/admin-one-vue-tailwind"
-          target="_blank"
-          :icon="mdiGithub"
-          label="Star on GitHub"
-          color="contrast"
-          rounded-full
-          small
-        />
-      </SectionTitleLineWithButton>
-
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
         <CardBoxWidget
           trend="12%"

@@ -1,13 +1,10 @@
 import {
-  mdiAccountCircle,
   mdiMonitor,
   mdiLock,
-  mdiAlertCircle,
-  mdiSquareEditOutline,
   mdiTable,
   mdiTelevisionGuide,
-  mdiResponsive,
-  mdiPalette,
+  mdiBookEdit,
+  mdiNoteEdit,
 } from "@mdi/js";
 
 export default [
@@ -22,38 +19,23 @@ export default [
     icon: mdiTable,
   },
   {
-    to: "/forms",
-    label: "Forms",
-    icon: mdiSquareEditOutline,
-  },
-  {
     to: "/ui",
     label: "UI",
     icon: mdiTelevisionGuide,
   },
   {
-    to: "/responsive",
-    label: "Responsive",
-    icon: mdiResponsive,
+    to: "/comic/new",
+    label: "新漫画",
+    icon: mdiBookEdit,
   },
   {
-    to: "/",
-    label: "Styles",
-    icon: mdiPalette,
-  },
-  {
-    to: "/profile",
-    label: "Profile",
-    icon: mdiAccountCircle,
+    to: "/post/new",
+    label: "新文章",
+    icon: mdiNoteEdit,
   },
   {
     to: "/login",
     label: "Login",
     icon: mdiLock,
-  },
-  {
-    to: "/error",
-    label: "Error",
-    icon: mdiAlertCircle,
   },
 ];
