@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import {
   mdiBookEdit,
   mdiFormatTitle,
@@ -16,7 +16,7 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
 import { useRoute } from "vue-router";
-
+import { get } from "@/stores/api.js";
 const route = useRoute();
 const id = route.params.id;
 let isNewPost = false;
@@ -44,6 +44,25 @@ const submit = () => {
   console.log(form);
 };
 
+const selectOptions = ref([]);
+
+onMounted(async () => {
+  try {
+    const endpoint = `/category/list?type=%E6%96%87%E7%AB%A0`;
+    const { response, status } = await get(endpoint);
+
+    if (status.completed) {
+      selectOptions.value = response.message.map((item) => {
+        return { id: item.id, label: item.name };
+      });
+    } else {
+      // 处理请求错误的逻辑
+    }
+  } catch (error) {
+    // 处理请求错误的逻辑
+  }
+});
+
 const formStatusWithHeader = ref(true);
 
 const formStatusCurrent = ref(0);
@@ -61,18 +80,12 @@ const formStatusOptions = [
   { color: "danger", title: "保存失败! 请检查是否参数有遗漏" },
 ];
 
-const selectOptions = [
-  { id: 1, label: "Business development" },
-  { id: 2, label: "Marketing" },
-  { id: 3, label: "Sales" },
-];
-
 const form = reactive({
   name: "",
   time: getCurrentDate(),
   content: "",
   cover: "",
-  category: selectOptions[0],
+  category: selectOptions.value[0],
 });
 </script>
 
