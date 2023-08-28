@@ -23,7 +23,7 @@ const fetchData = async () => {
 
     if (status.completed) {
       items.value = response;
-      numPages.value = response.message.currentPage;
+      numPages.value = response.message.total_pages;
     } else {
       // 处理请求错误的逻辑
     }

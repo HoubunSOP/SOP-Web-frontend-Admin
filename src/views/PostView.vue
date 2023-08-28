@@ -16,12 +16,21 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
 import { useRoute } from "vue-router";
-import { get } from "@/stores/api.js";
+import { get, post } from "@/stores/api.js";
+import { useToast } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+const toast = useToast();
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 const route = useRoute();
 const id = route.params.id;
 let isNewPost = false;
+let categoryId = 0;
 if (id == null) {
   isNewPost = true;
+} else {
+  isNewPost = false;
 }
 const getCurrentDate = () => {
   const date = new Date();
@@ -32,21 +41,52 @@ const getCurrentDate = () => {
   return `${year}-${month}-${day}`;
 };
 
-const submit = () => {
+const submit = async () => {
   if (form.magazine == "" || form.name == "") {
     formStatusCurrent.value = 4;
     return;
   }
-  //Todo 将状态绑定到post中
-  formStatusCurrent.value = formStatusOptions[formStatusCurrent.value + 1]
-    ? formStatusCurrent.value + 1
-    : 0;
-  console.log(form);
+  formStatusCurrent.value = 3;
+  try {
+    const endpoint = `/post/new`;
+    const { response, status } = await post(endpoint, form);
+
+    if (status.completed) {
+      if (response.status === "error") {
+        formStatusCurrent.value = 2;
+      } else {
+        formStatusCurrent.value = 1;
+      }
+    }
+  } catch (error) {
+    // 处理请求错误的逻辑
+  }
 };
 
 const selectOptions = ref([]);
 
 onMounted(async () => {
+  if (!isNewPost) {
+    try {
+      const endpoint = `/post/${route.params.id}?md=1`;
+      const { response, status } = await get(endpoint);
+
+      if (status.completed) {
+        if (response.status === "error") {
+          router.push("/");
+          toast.error(response.message);
+        } else {
+          form.name = response.message.post_name;
+          form.time = response.message.post_date;
+          form.content = response.message.post_content;
+          form.cover = response.message.post_cover;
+          categoryId = response.message.category_id;
+        }
+      }
+    } catch (error) {
+      // 处理请求错误的逻辑
+    }
+  }
   try {
     const endpoint = `/category/list?type=%E6%96%87%E7%AB%A0`;
     const { response, status } = await get(endpoint);
@@ -55,6 +95,10 @@ onMounted(async () => {
       selectOptions.value = response.message.map((item) => {
         return { id: item.id, label: item.name };
       });
+      const catIndex = selectOptions.value.findIndex(
+        (item) => item.id === parseInt(categoryId)
+      );
+      form.category = selectOptions.value[catIndex];
     } else {
       // 处理请求错误的逻辑
     }
@@ -81,6 +125,7 @@ const formStatusOptions = [
 ];
 
 const form = reactive({
+  post_id: isNewPost ? "0" : route.params.id,
   name: "",
   time: getCurrentDate(),
   content: "",

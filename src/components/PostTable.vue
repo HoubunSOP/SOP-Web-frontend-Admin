@@ -6,12 +6,16 @@ import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { get } from "@/stores/api.js";
-
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+const toast = useToast();
+const router = useRouter();
 const items = ref({ message: { articles: [] } });
 const currentPage = ref(0);
 const perPage = ref(15);
 const numPages = ref(0);
-const isModalActive = ref(false);
+const postId = ref(0);
 const isModalDangerActive = ref(false);
 
 const fetchData = async () => {
@@ -23,7 +27,7 @@ const fetchData = async () => {
 
     if (status.completed) {
       items.value = response;
-      numPages.value = response.message.currentPage;
+      numPages.value = response.message.total_pages;
     } else {
       // 处理请求错误的逻辑
     }
@@ -99,21 +103,37 @@ const redirectToExternalSite = (id) => {
   const url = `https://www.fwgxt.top/post/${id}`;
   window.open(url, "_blank");
 };
+const redirectToEdit = (id) => {
+  router.push(`/post/${id}`);
+};
+const delhandleConfirm = async () => {
+  try {
+    const endpoint = `/post/del/${postId.value}`;
+    const { response, status } = await get(endpoint);
+
+    if (status.completed) {
+      if (response.status === "error") {
+        toast.error("无法进行删除:" + response.message);
+      } else {
+        toast.success("删除文章成功！");
+        fetchData();
+      }
+    }
+  } catch (error) {
+    // 处理请求错误的逻辑
+  }
+};
 </script>
 <template>
-  <CardBoxModal v-model="isModalActive" title="Sample modal">
-    <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-    <p>This is sample modal</p>
-  </CardBoxModal>
-
   <CardBoxModal
     v-model="isModalDangerActive"
-    title="Please confirm"
+    title="您确定要删除此文章吗"
     button="danger"
+    button-label="确定"
     has-cancel
+    @confirm="delhandleConfirm"
   >
-    <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-    <p>This is sample modal</p>
+    <p>请注意，这个操作是 <b>不可撤销的</b></p>
   </CardBoxModal>
   <table>
     <thead>
@@ -155,13 +175,16 @@ const redirectToExternalSite = (id) => {
               color="warning"
               :icon="mdiPencil"
               small
-              @click="isModalActive = true"
+              @click="redirectToEdit(client.id)"
             />
             <BaseButton
               color="danger"
               :icon="mdiTrashCan"
               small
-              @click="isModalDangerActive = true"
+              @click="
+                isModalDangerActive = true;
+                postId = client.id;
+              "
             />
           </BaseButtons>
         </td>
