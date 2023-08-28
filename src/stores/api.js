@@ -6,7 +6,8 @@ import { useToast } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 const toast = useToast();
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: "https://api.fwgxt.top",
+  // baseURL: "http://127.0.0.1:8000",
   timeout: 5000,
 });
 
