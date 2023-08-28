@@ -90,14 +90,6 @@ const routes = [
     component: () => import("@/views/LoginView.vue"),
   },
   {
-    meta: {
-      title: "Error",
-    },
-    path: "/error",
-    name: "error",
-    component: () => import("@/views/ErrorView.vue"),
-  },
-  {
     path: "/comic/",
     redirect: "/comic/new",
   },
