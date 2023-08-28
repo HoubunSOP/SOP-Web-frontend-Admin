@@ -6,13 +6,18 @@ import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { get } from "@/stores/api.js";
+import { useToast } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+const toast = useToast();
 const items = ref({ message: { articles: [] } });
 const currentPage = ref(0);
 const perPage = ref(15);
 const numPages = ref(0);
-const isModalActive = ref(false);
 const isModalDangerActive = ref(false);
+const comicId = ref(0);
 
 const fetchData = async () => {
   try {
@@ -99,21 +104,37 @@ const redirectToExternalSite = (id) => {
   const url = `https://www.fwgxt.top/comic/${id}`;
   window.open(url, "_blank");
 };
+const delhandleConfirm = async () => {
+  try {
+    const endpoint = `/comic/del/${comicId.value}`;
+    const { response, status } = await get(endpoint);
+
+    if (status.completed) {
+      if (response.status === "error") {
+        toast.error("无法进行删除:" + response.message);
+      } else {
+        toast.success("删除漫画成功！");
+        fetchData();
+      }
+    }
+  } catch (error) {
+    // 处理请求错误的逻辑
+  }
+};
+const redirectToEdit = (id) => {
+  router.push(`/comic/${id}`);
+};
 </script>
 <template>
-  <CardBoxModal v-model="isModalActive" title="Sample modal">
-    <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-    <p>This is sample modal</p>
-  </CardBoxModal>
-
   <CardBoxModal
     v-model="isModalDangerActive"
-    title="Please confirm"
+    title="您确定要删除此漫画吗"
     button="danger"
+    button-label="确定"
     has-cancel
+    @confirm="delhandleConfirm"
   >
-    <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-    <p>This is sample modal</p>
+    <p>请注意，这个操作是 <b>不可撤销的</b></p>
   </CardBoxModal>
   <table>
     <thead>
@@ -155,13 +176,16 @@ const redirectToExternalSite = (id) => {
               color="warning"
               :icon="mdiPencil"
               small
-              @click="isModalActive = true"
+              @click="redirectToEdit(client.id)"
             />
             <BaseButton
               color="danger"
               :icon="mdiTrashCan"
               small
-              @click="isModalDangerActive = true"
+              @click="
+                isModalDangerActive = true;
+                comicId = client.id;
+              "
             />
           </BaseButtons>
         </td>

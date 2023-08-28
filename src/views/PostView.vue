@@ -42,7 +42,7 @@ const getCurrentDate = () => {
 };
 
 const submit = async () => {
-  if (form.magazine == "" || form.name == "") {
+  if (form.content == "" || form.name == "") {
     formStatusCurrent.value = 4;
     return;
   }
@@ -56,7 +56,11 @@ const submit = async () => {
         formStatusCurrent.value = 2;
       } else {
         formStatusCurrent.value = 1;
+        toast.success("保存成功！");
+        router.push("/list/post");
       }
+    } else {
+      formStatusCurrent.value = 2;
     }
   } catch (error) {
     // 处理请求错误的逻辑
