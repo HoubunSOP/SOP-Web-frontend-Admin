@@ -7,7 +7,7 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { get } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 import { useRouter } from "vue-router";
 
 const router = useRouter();

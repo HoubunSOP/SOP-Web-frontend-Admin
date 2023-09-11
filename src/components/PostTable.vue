@@ -8,7 +8,7 @@ import BaseButton from "@/components/BaseButton.vue";
 import { get } from "@/stores/api.js";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 const toast = useToast();
 const router = useRouter();
 const items = ref({ message: { articles: [] } });

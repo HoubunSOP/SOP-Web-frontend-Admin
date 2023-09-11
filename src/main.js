@@ -3,7 +3,6 @@ import { createPinia } from "pinia";
 
 import App from "./App.vue";
 import router from "./router";
-import { useMainStore } from "@/stores/main.js";
 import { useStyleStore } from "@/stores/style.js";
 import { darkModeKey } from "@/config.js";
 import mavonEditor from "mavon-editor";
@@ -31,12 +30,9 @@ const options = {
 app.use(Toast, options).use(router).use(pinia).use(mavonEditor).mount("#app");
 
 /* Init Pinia stores */
-const mainStore = useMainStore(pinia);
 const styleStore = useStyleStore(pinia);
 
 /* Fetch sample data */
-mainStore.fetch("clients");
-mainStore.fetch("history");
 
 /* App style */
 styleStore.setStyle("white");
@@ -51,7 +47,7 @@ if (
 }
 
 /* Default title tag */
-const defaultDocumentTitle = "Admin One Vue 3 Tailwind";
+const defaultDocumentTitle = "芳文观星台 - 网站后台";
 
 /* Set document title from route meta */
 router.afterEach((to) => {

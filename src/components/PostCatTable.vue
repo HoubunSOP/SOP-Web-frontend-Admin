@@ -8,7 +8,7 @@ import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 import { get, put } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 const toast = useToast();
 const items = ref({ message: { articles: [] } });
 const perPage = ref(15);

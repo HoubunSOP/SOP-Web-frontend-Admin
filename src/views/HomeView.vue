@@ -1,39 +1,44 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
-import { useMainStore } from "@/stores/main";
-import {
-  mdiAccountMultiple,
-  mdiCartOutline,
-  mdiChartTimelineVariant,
-  mdiReload,
-  mdiChartPie,
-} from "@mdi/js";
+import { ref, onMounted, reactive } from "vue";
+import { mdiBook, mdiNote, mdiFormatListBulletedTriangle } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
-import LineChart from "@/components/Charts/LineChart.vue";
 import SectionMain from "@/components/SectionMain.vue";
 import CardBoxWidget from "@/components/CardBoxWidget.vue";
-import CardBox from "@/components/CardBox.vue";
-import BaseButton from "@/components/BaseButton.vue";
 import CardBoxTransaction from "@/components/CardBoxTransaction.vue";
-import CardBoxClient from "@/components/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
+import { useToast } from "vue-toastification";
+import { get } from "@/stores/api.js";
 
+const toast = useToast();
 const chartData = ref(null);
-
+const form = reactive({
+  comic_count: 0,
+  article_count: 0,
+  category_count: 0,
+});
 const fillChartData = () => {
   chartData.value = chartConfig.sampleChartData();
 };
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    const endpoint = `/index/stats`;
+    const { response, status } = await get(endpoint);
+
+    if (status.completed) {
+      if (response.status === "error") {
+        toast.error(response.message);
+      } else {
+        form.comic_count = response.message.comic_count;
+        form.article_count = response.message.article_count;
+        form.category_count = response.message.category_count;
+      }
+    }
+  } catch (error) {
+    // 处理请求错误的逻辑
+  }
   fillChartData();
 });
-
-const mainStore = useMainStore();
-
-const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
-
-const transactionBarItems = computed(() => mainStore.history);
 </script>
 
 <template>
@@ -41,71 +46,39 @@ const transactionBarItems = computed(() => mainStore.history);
     <SectionMain>
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
         <CardBoxWidget
-          trend="12%"
-          trend-type="up"
           color="text-emerald-500"
-          :icon="mdiAccountMultiple"
-          :number="512"
-          label="Clients"
+          :icon="mdiBook"
+          :number="form.comic_count"
+          suffix="本"
+          label="漫画"
         />
         <CardBoxWidget
-          trend="12%"
-          trend-type="down"
           color="text-blue-500"
-          :icon="mdiCartOutline"
-          :number="7770"
-          prefix="$"
-          label="Sales"
+          :icon="mdiNote"
+          :number="form.article_count"
+          suffix="篇"
+          label="文章"
         />
         <CardBoxWidget
-          trend="Overflow"
-          trend-type="alert"
           color="text-red-500"
-          :icon="mdiChartTimelineVariant"
-          :number="256"
-          suffix="%"
-          label="Performance"
+          :icon="mdiFormatListBulletedTriangle"
+          :number="form.category_count"
+          suffix="个"
+          label="文章分类"
         />
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="grid grid-cols-1 gap-6 mb-6">
         <div class="flex flex-col justify-between">
           <CardBoxTransaction
-            v-for="(transaction, index) in transactionBarItems"
-            :key="index"
-            :amount="transaction.amount"
-            :date="transaction.date"
-            :business="transaction.business"
-            :type="transaction.type"
-            :name="transaction.name"
-            :account="transaction.account"
-          />
-        </div>
-        <div class="flex flex-col justify-between">
-          <CardBoxClient
-            v-for="client in clientBarItems"
-            :key="client.id"
-            :name="client.name"
-            :login="client.login"
-            :date="client.created"
-            :progress="client.progress"
+            amount="1"
+            date="2022.2.2"
+            business="test"
+            type="invoice"
+            name="同步芳文社官网漫画信息"
           />
         </div>
       </div>
-
-      <SectionTitleLineWithButton :icon="mdiChartPie" title="Trends overview">
-        <BaseButton
-          :icon="mdiReload"
-          color="whiteDark"
-          @click="fillChartData"
-        />
-      </SectionTitleLineWithButton>
-
-      <CardBox class="mb-6">
-        <div v-if="chartData">
-          <line-chart :data="chartData" class="h-96" />
-        </div>
-      </CardBox>
     </SectionMain>
   </LayoutAuthenticated>
 </template>

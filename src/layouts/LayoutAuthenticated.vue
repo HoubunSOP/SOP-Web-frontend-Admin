@@ -4,19 +4,12 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import menuAside from "@/menuAside.js";
 import menuNavBar from "@/menuNavBar.js";
-import { useMainStore } from "@/stores/main.js";
 import { useStyleStore } from "@/stores/style.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import NavBar from "@/components/NavBar.vue";
 import NavBarItemPlain from "@/components/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu.vue";
-
-useMainStore().setUser({
-  name: "John Doe",
-  email: "john@example.com",
-  avatar:
-    "https://avatars.dicebear.com/api/avataaars/example.svg?options[top][]=shortHair&options[accessoriesChance]=93",
-});
+import { getAccessTokenFromCookie } from "@/stores/api.js";
 
 const layoutAsidePadding = "xl:pl-60";
 
@@ -41,6 +34,11 @@ const menuClick = (event, item) => {
     //
   }
 };
+
+const access_token = getAccessTokenFromCookie();
+if (access_token == null) {
+  router.push("/login");
+}
 </script>
 
 <template>

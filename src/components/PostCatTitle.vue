@@ -9,7 +9,6 @@ import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 import { post } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
 
 const toast = useToast();
 defineProps({

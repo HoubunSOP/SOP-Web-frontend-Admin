@@ -19,7 +19,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 import { useRouter } from "vue-router";
 import { get, post } from "@/stores/api.js";
 const toast = useToast();

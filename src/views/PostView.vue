@@ -18,7 +18,7 @@ import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
 import { useRoute } from "vue-router";
 import { get, post } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 const toast = useToast();
 import { useRouter } from "vue-router";
 

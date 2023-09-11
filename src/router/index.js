@@ -3,7 +3,7 @@ import Home from "@/views/HomeView.vue";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
 import { useToast } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 NProgress.configure({ showSpinner: false }); // 禁⽤进度环 若为true右侧会出现一个进度环
 const routes = [
   {

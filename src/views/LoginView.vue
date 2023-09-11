@@ -10,17 +10,43 @@ import FormControl from "@/components/FormControl.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
+import { SHA256 } from "crypto-js";
+import { setAccessTokenCookie, post } from "@/stores/api.js";
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const form = reactive({
-  login: "john.doe",
-  pass: "highly-secure-password-fYjUw-",
-  remember: true,
+  login: "",
+  pass: "",
+  remember: false,
 });
 
 const router = useRouter();
 
-const submit = () => {
-  router.push("/dashboard");
+const submit = async () => {
+  const hashedPassword = SHA256(form.pass).toString();
+  try {
+    const endpoint = "/auth";
+    const { response, status } = await post(endpoint, {
+      user_name: form.login,
+      password: hashedPassword,
+    });
+
+    if (status.completed) {
+      if (response.status === "error") {
+        toast.error("登录失败，请检查用户名与密码");
+      } else {
+        const access_token = response.access_token; // 假设access_token是从响应中获取的字段
+        setAccessTokenCookie(access_token, form.remember); // 将access_token保存到Cookies中
+        toast.success(`登录成功`);
+        router.push("/dashboard");
+      }
+    } else {
+      toast.error("登录失败");
+    }
+  } catch (error) {
+    // 处理请求错误的逻辑
+  }
 };
 </script>
 
@@ -28,7 +54,7 @@ const submit = () => {
   <LayoutGuest>
     <SectionFullScreen v-slot="{ cardClass }" bg="purplePink">
       <CardBox :class="cardClass" is-form @submit.prevent="submit">
-        <FormField label="Login" help="Please enter your login">
+        <FormField label="用户名" help="请输入您的账户名">
           <FormControl
             v-model="form.login"
             :icon="mdiAccount"
@@ -37,7 +63,7 @@ const submit = () => {
           />
         </FormField>
 
-        <FormField label="Password" help="Please enter your password">
+        <FormField label="密码" help="请输入您的密码">
           <FormControl
             v-model="form.pass"
             :icon="mdiAsterisk"
@@ -50,14 +76,13 @@ const submit = () => {
         <FormCheckRadio
           v-model="form.remember"
           name="remember"
-          label="Remember"
+          label="记住我"
           :input-value="true"
         />
 
         <template #footer>
           <BaseButtons>
-            <BaseButton type="submit" color="info" label="Login" />
-            <BaseButton to="/dashboard" color="info" outline label="Back" />
+            <BaseButton type="submit" color="info" label="登录" />
           </BaseButtons>
         </template>
       </CardBox>

@@ -1,6 +1,5 @@
 import {
   mdiMonitor,
-  mdiLock,
   mdiBookEdit,
   mdiNoteEdit,
   mdiFormatListBulletedSquare,
@@ -38,10 +37,5 @@ export default [
     to: "/post/new",
     label: "新文章",
     icon: mdiNoteEdit,
-  },
-  {
-    to: "/login",
-    label: "Login",
-    icon: mdiLock,
   },
 ];
