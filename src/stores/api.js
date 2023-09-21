@@ -1,19 +1,25 @@
-// api.js
 import axios from "axios";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { useToast } from "vue-toastification";
-
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const toast = useToast();
+
+let baseURL = "https://api.fwgxt.top";
+
+if (
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+) {
+  baseURL = "http://127.0.0.1:8000";
+}
+
 const api = axios.create({
-  baseURL: "https://api.fwgxt.top",
-  //baseURL: "http://127.0.0.1:8000",
+  baseURL: baseURL,
   timeout: 5000,
 });
-
 // 请求拦截器
 api.interceptors.request.use(
   (config) => {
