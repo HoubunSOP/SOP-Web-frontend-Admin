@@ -143,7 +143,7 @@ const redirectToEdit = (id) => {
         <th>ID</th>
         <th>名称</th>
         <th>所属刊物</th>
-        <th>是否为自动生成</th>
+        <th>校对情况</th>
         <th>时间</th>
         <th />
       </tr>
@@ -160,7 +160,7 @@ const redirectToEdit = (id) => {
           {{ client.category_name }}
         </td>
         <td class="text-center" data-label="is auto">
-          <span v-if="client.auto == 1">✅</span>
+          <span v-if="client.auto != 1">✅</span>
           <span v-else>⛔</span>
         </td>
         <td data-label="date" class="lg:w-1 whitespace-nowrap">

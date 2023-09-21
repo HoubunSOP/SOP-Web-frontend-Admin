@@ -13,6 +13,7 @@ import FormControl from "@/components/FormControl.vue";
 import BaseDivider from "@/components/BaseDivider.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
 import { useRoute } from "vue-router";
@@ -85,6 +86,7 @@ onMounted(async () => {
           form.content = response.message.post_content;
           form.cover = response.message.post_cover;
           categoryId = response.message.category_id;
+          form.recommended = response.message.recommended;
         }
       }
     } catch (error) {
@@ -135,6 +137,7 @@ const form = reactive({
   content: "",
   cover: "",
   category: selectOptions.value[0],
+  recommended: "",
 });
 </script>
 
@@ -184,6 +187,17 @@ const form = reactive({
             placeholder="文章封面(图片链接)"
           />
           <FormControl v-model="form.category" :options="selectOptions" />
+        </FormField>
+        <FormField label="是否为推荐文章">
+          <FormCheckRadioGroup
+            v-model="form.recommended"
+            name="recommended"
+            type="radio"
+            :options="{
+              0: '否',
+              1: '是',
+            }"
+          />
         </FormField>
         <template #footer>
           <BaseButton type="submit" color="info" label="保存" />

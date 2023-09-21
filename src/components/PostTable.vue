@@ -141,6 +141,7 @@ const delhandleConfirm = async () => {
         <th>ID</th>
         <th>名称</th>
         <th>分类</th>
+        <th>是否为推荐文章</th>
         <th>时间</th>
         <th />
       </tr>
@@ -155,6 +156,10 @@ const delhandleConfirm = async () => {
         </td>
         <td data-label="category">
           {{ client.category_name }}
+        </td>
+        <td class="text-center" data-label="recommended">
+          <span v-if="client.recommended == 1">✅</span>
+          <span v-else>⛔</span>
         </td>
         <td data-label="date" class="lg:w-1 whitespace-nowrap">
           <small
