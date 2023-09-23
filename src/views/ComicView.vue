@@ -71,6 +71,7 @@ const form = reactive({
   author: "",
   cover: "https://houbunsha.co.jp/img/mv_img/con_item_nPrn_1.png",
   magazine: 0,
+  auto: 0,
 });
 
 const submit = async () => {

@@ -38,4 +38,9 @@ export default [
     label: "新文章",
     icon: mdiNoteEdit,
   },
+  {
+    to: "/settings",
+    label: "设置",
+    icon: mdiNoteEdit,
+  },
 ];

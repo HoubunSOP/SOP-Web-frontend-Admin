@@ -75,11 +75,10 @@ const routes = [
   },
   {
     meta: {
-      title: "Ui",
+      title: "设置",
     },
-    path: "/ui",
-    name: "ui",
-    component: () => import("@/views/UiView.vue"),
+    path: "/settings",
+    component: () => import("@/views/SettingsView.vue"),
   },
   {
     meta: {
