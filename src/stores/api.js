@@ -7,7 +7,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const toast = useToast();
 
-let baseURL = "https://api.fwgxt.top";
+let baseURL = "https://api.fwgxt.top/api";
 
 if (
   window.location.hostname === "localhost" ||
