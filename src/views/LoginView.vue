@@ -26,17 +26,17 @@ const router = useRouter();
 const submit = async () => {
   const hashedPassword = SHA256(form.pass).toString();
   try {
-    const endpoint = "/auth";
+    const endpoint = "/login";
     const { response, status } = await post(endpoint, {
-      user_name: form.login,
-      password: hashedPassword,
+      username: form.login,
+      password: form.pass,
     });
 
     if (status.completed) {
-      if (response.status === "error") {
-        toast.error("登录失败，请检查用户名与密码");
+      if (response.status !== 200) {
+        toast.error(response.message);
       } else {
-        const access_token = response.access_token; // 假设access_token是从响应中获取的字段
+        const access_token = response.detail.access_token;
         setAccessTokenCookie(access_token, form.remember); // 将access_token保存到Cookies中
         toast.success(`登录成功`);
         router.push("/dashboard");

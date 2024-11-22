@@ -6,7 +6,7 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
-import { get, put } from "@/stores/api.js";
+import { deleter, get, put } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -20,15 +20,15 @@ const rename = ref("");
 
 const fetchData = async () => {
   try {
-    const endpoint = `/category/list?type=%E6%96%87%E7%AB%A0`;
+    const endpoint = `/categories?category_type_id=2`;
     const { response, status } = await get(endpoint);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error("无法get数据:" + response.message);
       }
-      items.value = response;
-      perPage.value = response.message.length;
+      items.value = response.detail;
+      perPage.value = response.detail.length;
     }
   } catch (error) {
     // 处理请求错误的逻辑
@@ -44,11 +44,11 @@ const redirectToExternalSite = (id) => {
 
 const delhandleConfirm = async () => {
   try {
-    const endpoint = `/category/del/${catId.value}`;
-    const { response, status } = await get(endpoint);
+    const endpoint = `/categories/${catId.value}`;
+    const { response, status } = await deleter(endpoint);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error("无法进行删除:" + response.message);
       } else {
         toast.success("删除分类成功！");
@@ -62,15 +62,15 @@ const delhandleConfirm = async () => {
 const renamehandleConfirm = async () => {
   try {
     const data = {
-      new_name: rename.value,
-      category_id: catId.value,
+      name: rename.value,
+      category_type: 2,
     };
     console.log(data);
-    const endpoint = `/category/rename/`;
+    const endpoint = `/categories/${catId.value}`;
     const { response, status } = await put(endpoint, data);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error("无法进行重命名:" + response.message);
       } else {
         toast.success("重命名分类成功！");
@@ -121,7 +121,7 @@ const renamehandleConfirm = async () => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="client in items.message" :key="client.id">
+      <tr v-for="client in items" :key="client.id">
         <td data-label="id">
           {{ client.id }}
         </td>
@@ -131,8 +131,8 @@ const renamehandleConfirm = async () => {
         <td data-label="article_count" class="lg:w-[6rem] whitespace-nowrap">
           <small
             class="text-gray-500 dark:text-slate-400"
-            :title="client.article_count"
-            >{{ client.article_count }}</small
+            :title="client.item_count"
+            >{{ client.item_count }}</small
           >
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
@@ -160,7 +160,7 @@ const renamehandleConfirm = async () => {
               @click="
                 isModalDangerActive = true;
                 catId = client.id;
-                articleCount = client.article_count;
+                articleCount = client.item_count;
               "
             />
           </BaseButtons>

@@ -17,7 +17,7 @@ import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import NotificationBarInCard from "@/components/NotificationBarInCard.vue";
 import { useRoute } from "vue-router";
-import { get, post } from "@/stores/api.js";
+import { get, post, put } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -43,28 +43,36 @@ const getCurrentDate = () => {
 };
 
 const submit = async () => {
-  if (form.content == "" || form.name == "") {
+  if (!form.content || !form.title) {
     formStatusCurrent.value = 4;
     return;
   }
   formStatusCurrent.value = 3;
   try {
-    const endpoint = `/post/new`;
-    const { response, status } = await post(endpoint, form);
+    const endpoint = `/articles`;
+    console.log(form);
+    let status;
 
+    if (isNewPost) {
+      const { status: responseStatus } = await post(endpoint, form);
+      status = responseStatus;
+    } else {
+      const { status: responseStatus } = await put(
+        `${endpoint}/${route.params.id}`,
+        form
+      );
+      status = responseStatus;
+    }
     if (status.completed) {
-      if (response.status === "error") {
-        formStatusCurrent.value = 2;
-      } else {
-        formStatusCurrent.value = 1;
-        toast.success("保存成功！");
-        router.push("/list/post");
-      }
+      formStatusCurrent.value = 1;
+      toast.success("保存成功！");
+      router.push("/list/post");
     } else {
       formStatusCurrent.value = 2;
     }
   } catch (error) {
-    // 处理请求错误的逻辑
+    console.error("保存数据失败：", error);
+    formStatusCurrent.value = 2;
   }
 };
 
@@ -73,40 +81,38 @@ const selectOptions = ref([]);
 onMounted(async () => {
   if (!isNewPost) {
     try {
-      const endpoint = `/post/${route.params.id}?md=1`;
+      const endpoint = `/articles/${route.params.id}?edit=true`;
       const { response, status } = await get(endpoint);
 
       if (status.completed) {
-        if (response.status === "error") {
+        if (response.status !== 200) {
           router.push("/");
           toast.error(response.message);
         } else {
-          form.name = response.message.post_name;
-          form.time = response.message.post_date;
-          form.content = response.message.post_content;
-          form.cover = response.message.post_cover;
-          categoryId = response.message.category_id;
-          form.recommended = response.message.recommended;
+          form.title = response.detail.title;
+          form.date = response.detail.date;
+          form.content = response.detail.content;
+          form.cover = response.detail.cover;
+          categoryId = response.detail.categories[0].id;
+          form.recommended = response.detail.recommended ? 1 : 0;
         }
       }
     } catch (error) {
-      // 处理请求错误的逻辑
+      console.error("获取文章数据失败：", error);
     }
   }
   try {
-    const endpoint = `/category/list?type=%E6%96%87%E7%AB%A0`;
+    const endpoint = `/categories?category_type_id=2`;
     const { response, status } = await get(endpoint);
 
     if (status.completed) {
-      selectOptions.value = response.message.map((item) => {
-        return { id: item.id, label: item.name };
+      selectOptions.value = response.detail.map((item) => {
+        return { id: item.id, label: `${item.id} - ${item.name}` };
       });
       const catIndex = selectOptions.value.findIndex(
         (item) => item.id === parseInt(categoryId)
       );
-      form.category = selectOptions.value[catIndex];
-    } else {
-      // 处理请求错误的逻辑
+      form.categories = selectOptions.value[catIndex];
     }
   } catch (error) {
     // 处理请求错误的逻辑
@@ -131,12 +137,11 @@ const formStatusOptions = [
 ];
 
 const form = reactive({
-  post_id: isNewPost ? "0" : route.params.id,
-  name: "",
-  time: getCurrentDate(),
+  title: "",
+  date: getCurrentDate(),
   content: "",
   cover: "",
-  category: selectOptions.value[0],
+  categories: selectOptions.value[0],
   recommended: "",
 });
 </script>
@@ -163,12 +168,12 @@ const form = reactive({
           help="第一个为文章标题，第二个为文章发布日期"
         >
           <FormControl
-            v-model="form.name"
+            v-model="form.title"
             :icon="mdiFormatTitle"
             placeholder="文章标题"
           />
           <FormControl
-            v-model="form.time"
+            v-model="form.date"
             type="date"
             :icon="mdiCalendarClock"
             placeholder="选择日期"
@@ -186,7 +191,7 @@ const form = reactive({
             :icon="mdiImage"
             placeholder="文章封面(图片链接)"
           />
-          <FormControl v-model="form.category" :options="selectOptions" />
+          <FormControl v-model="form.categories" :options="selectOptions" />
         </FormField>
         <FormField label="是否为推荐文章">
           <FormCheckRadioGroup

@@ -17,11 +17,11 @@ const currentPage = ref(0);
 const perPage = ref(15);
 const numPages = ref(0);
 const isModalDangerActive = ref(false);
-const comicId = ref(0);
+const mangazineId = ref(0);
 
 const fetchData = async () => {
   try {
-    const endpoint = `/list/comics?limit=${perPage.value}&page=${
+    const endpoint = `/list/magazines?limit=${perPage.value}&page=${
       currentPage.value + 1
     }`;
     const { response, status } = await get(endpoint);
@@ -102,19 +102,19 @@ const handlePageClick = (page) => {
 };
 
 const redirectToExternalSite = (id) => {
-  const url = `https://www.fwgxt.top/comic/${id}`;
+  const url = `https://www.fwgxt.top/magazine/${id}`;
   window.open(url, "_blank");
 };
 const delhandleConfirm = async () => {
   try {
-    const endpoint = `/comics/${comicId.value}`;
+    const endpoint = `/magazines/${mangazineId.value}`;
     const { response, status } = await get(endpoint);
 
     if (status.completed) {
       if (response.status !== 200) {
         toast.error("无法进行删除:" + response.message);
       } else {
-        toast.success("删除漫画成功！");
+        toast.success("删除杂志成功！");
         fetchData();
       }
     }
@@ -123,13 +123,13 @@ const delhandleConfirm = async () => {
   }
 };
 const redirectToEdit = (id) => {
-  router.push(`/comic/${id}`);
+  router.push(`/mangazine/${id}`);
 };
 </script>
 <template>
   <CardBoxModal
     v-model="isModalDangerActive"
-    title="您确定要删除此漫画吗"
+    title="您确定要删除此杂志吗"
     button="danger"
     button-label="确定"
     has-cancel
@@ -143,7 +143,6 @@ const redirectToEdit = (id) => {
         <th>ID</th>
         <th>名称</th>
         <th>所属刊物</th>
-        <th>校对情况</th>
         <th>时间</th>
         <th />
       </tr>
@@ -159,15 +158,11 @@ const redirectToEdit = (id) => {
         <td data-label="category">
           {{ client.categories[0].name }}
         </td>
-        <td class="text-center" data-label="is auto">
-          <span v-if="client.auto != 1">✅</span>
-          <span v-else>⛔</span>
-        </td>
         <td data-label="date" class="lg:w-1 whitespace-nowrap">
           <small
             class="text-gray-500 dark:text-slate-400"
-            :title="client.date"
-            >{{ client.date }}</small
+            :title="client.publish_date"
+            >{{ client.publish_date }}</small
           >
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
@@ -190,7 +185,7 @@ const redirectToEdit = (id) => {
               small
               @click="
                 isModalDangerActive = true;
-                comicId = client.id;
+                mangazineId = client.id;
               "
             />
           </BaseButtons>

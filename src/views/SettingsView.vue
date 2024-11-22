@@ -11,6 +11,7 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import { useToast } from "vue-toastification";
 
 import { get, post } from "@/stores/api.js";
+
 const toast = useToast();
 
 onMounted(async () => {
@@ -19,7 +20,7 @@ onMounted(async () => {
     const { response, status } = await get(endpoint);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error(response.message);
       } else {
         form.topswiper = response.message.topswiper;
@@ -39,7 +40,7 @@ const submit = async () => {
     const { response, status } = await post(endpoint, form);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error(`保存出错！${response.message}`);
       } else {
         toast.success("保存成功！");

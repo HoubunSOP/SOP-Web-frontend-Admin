@@ -24,6 +24,11 @@ export default [
     icon: mdiFormatListText,
   },
   {
+    to: "/list/mangazine",
+    label: "杂志列表",
+    icon: mdiFormatListText,
+  },
+  {
     to: "/list/postcat",
     label: "文章分类列表",
     icon: mdiFormatListBulletedTriangle,
@@ -31,6 +36,11 @@ export default [
   {
     to: "/comic/new",
     label: "新漫画",
+    icon: mdiBookEdit,
+  },
+  {
+    to: "/mangazine/new",
+    label: "新杂志",
     icon: mdiBookEdit,
   },
   {

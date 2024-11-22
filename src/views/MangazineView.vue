@@ -4,9 +4,11 @@ import {
   mdiBookEdit,
   mdiFormatTitle,
   mdiCalendarClock,
-  mdiPalette,
   mdiImage,
-  mdiRenameBox,
+  mdiMinus,
+  mdiPlus,
+  mdiBook,
+  mdiLink,
 } from "@mdi/js";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
@@ -27,7 +29,7 @@ const router = useRouter();
 const route = useRoute();
 
 const id = route.params.id;
-const isNewComic = id == null;
+const isNewMangazine = id == null;
 
 const getCurrentDate = () => {
   const date = new Date();
@@ -39,16 +41,15 @@ const getCurrentDate = () => {
 
 const form = reactive({
   name: "",
-  original_name: "",
-  date: getCurrentDate(),
+  link: "",
+  publish_date: getCurrentDate(),
   intro: "",
-  author_name: "",
   cover: "https://houbunsha.co.jp/img/mv_img/con_item_nPrn_1.png",
-  auto: 0,
   category: {
     id: 0,
     name: "",
   },
+  comics: [""],
 });
 
 const formStatusCurrent = ref(0);
@@ -57,7 +58,7 @@ const GetStatus = ref(true);
 const formStatusOptions = [
   {
     color: "info",
-    title: isNewComic
+    title: isNewMangazine
       ? "请填写下面的字段后点击保存按钮"
       : "请修改下面的字段后点击保存按钮",
   },
@@ -68,49 +69,50 @@ const formStatusOptions = [
 ];
 
 onMounted(async () => {
-  if (!isNewComic) {
+  if (!isNewMangazine) {
     GetStatus.value = false;
     try {
-      const endpoint = `/comics/${route.params.id}?edit=true`;
+      const endpoint = `/magazines/${route.params.id}?edit=true`;
       const { response, status } = await get(endpoint);
 
       if (status.completed) {
         if (response.status !== 200) {
-          toast.error(response?.message || "无法获取漫画详情");
+          toast.error(response?.message || "无法获取杂志详情");
           router.push("/");
         } else {
           GetStatus.value = true;
-          form.name = response.detail.name;
-          form.original_name = response.detail.original_name;
-          form.date = response.detail.date;
+          form.name = response.detail.magazine.name;
+          form.link = response.detail.magazine.link;
+          form.publish_date = response.detail.magazine.publish_date;
           form.intro = response.detail.intro;
-          form.cover = response.detail.cover;
-          form.author_name = response.detail.author.name;
+          form.cover = response.detail.magazine.cover;
           form.category = response.detail.categories[0];
+          form.comics = response.detail.comics;
           console.log(form);
         }
       }
     } catch (error) {
-      toast.error(error || "无法获取漫画详情");
+      toast.error(error || "无法获取杂志详情");
       router.push("/");
     }
   }
 });
 
 const submit = async () => {
-  if (!form.category.id || !form.name) {
+  if (!form.category.id || !form.name || !form.category.id) {
     formStatusCurrent.value = 4;
     return;
   }
-
+  // 过滤掉空值
+  form.comics = form.comics.filter((comic) => comic.trim() !== "");
   formStatusCurrent.value = 3;
 
   try {
-    const endpoint = `/comics`;
+    const endpoint = `/magazines`;
     console.log(form);
     let status;
 
-    if (isNewComic) {
+    if (isNewMangazine) {
       const { status: responseStatus } = await post(endpoint, form);
 
       status = responseStatus;
@@ -125,13 +127,27 @@ const submit = async () => {
     if (status.completed) {
       formStatusCurrent.value = 1;
       toast.success("保存成功！");
-      router.push("/list/comic");
+      router.push("/list/mangazine");
     } else {
       formStatusCurrent.value = 2;
     }
   } catch (error) {
     console.error("保存数据失败：", error);
     formStatusCurrent.value = 2;
+  }
+};
+
+const addMangazine = (index) => {
+  // 在指定索引后插入一个新项
+  form.comics.splice(index + 1, 0, "");
+};
+
+const removeMangazine = (index) => {
+  // 删除指定索引项
+  if (form.comics.length > 1) {
+    form.comics.splice(index, 1);
+  } else {
+    toast.warning("至少需要一个关联漫画");
   }
 };
 </script>
@@ -141,7 +157,7 @@ const submit = async () => {
     <SectionMain>
       <SectionTitleLineWithButton
         :icon="mdiBookEdit"
-        :title="isNewComic ? '添加漫画' : '修改漫画'"
+        :title="isNewMangazine ? '添加杂志' : '修改杂志'"
         main
       >
       </SectionTitleLineWithButton>
@@ -155,46 +171,41 @@ const submit = async () => {
         </NotificationBarInCard>
         <FormField
           label="标题以及日期"
-          help="第一个为漫画标题，第二个为漫画发布日期"
+          help="第一个为杂志标题，第二个为杂志发布日期"
         >
           <FormControl
             v-model="form.name"
             :icon="mdiFormatTitle"
-            placeholder="漫画标题"
+            placeholder="杂志标题"
           />
           <FormControl
-            v-model="form.date"
+            v-model="form.publish_date"
             type="date"
             :icon="mdiCalendarClock"
             placeholder="选择日期"
           />
         </FormField>
-        <FormField label="漫画简介">
+        <FormField label="杂志简介">
           <mavon-editor v-model="form.intro" />
         </FormField>
         <BaseDivider />
 
-        <FormField label="漫画作者与漫画原名" help="漫画作者和原名应与同系列/同作者的字符串相同来更好的让后端链接">
-          <FormControl
-            v-model="form.author_name"
-            :icon="mdiPalette"
-            placeholder="漫画作者"
-          />
-          <FormControl
-            v-model="form.original_name"
-            :icon="mdiRenameBox"
-            placeholder="漫画原名"
-          />
-        </FormField>
         <FormField
-          label="漫画封面与刊物类型"
-          help="默认封面为芳文社官网的默认封面"
+          label="杂志原链接、封面与分类"
+          help="杂志原链接应填写芳文社官方链接。默认封面为芳文社官网的默认封面"
         >
           <FormControl
+            v-model="form.link"
+            type="url"
+            :icon="mdiLink"
+            placeholder="杂志链接"
+          />
+          <FormControl
+            class="w-full"
             v-model="form.cover"
             type="url"
             :icon="mdiImage"
-            placeholder="漫画封面(图片链接)"
+            placeholder="杂志封面(图片链接)"
           />
           <FormCheckRadioGroup
             v-model="form.category.id"
@@ -207,6 +218,37 @@ const submit = async () => {
               4: 'Forward',
             }"
           />
+        </FormField>
+        <FormField
+          label="关联漫画原名"
+          help="为了方便后端查询，请填写漫画数据中的原名部分以便用户搜索"
+        >
+          <div
+            v-for="(comic, index) in form.comics"
+            :key="index"
+            class="flex w-full mb-4"
+          >
+            <FormControl
+              class="w-full"
+              v-model="form.comics[index]"
+              :icon="mdiBook"
+              placeholder="杂志关联漫画原名"
+            />
+            <BaseButton
+              color="info"
+              class="mx-4 my-auto"
+              :icon="mdiPlus"
+              small
+              @click="addMangazine(index)"
+            />
+            <BaseButton
+              color="danger"
+              class="my-auto"
+              :icon="mdiMinus"
+              small
+              @click="removeMangazine(index)"
+            />
+          </div>
         </FormField>
         <template #footer>
           <BaseButton type="submit" color="info" label="保存" />

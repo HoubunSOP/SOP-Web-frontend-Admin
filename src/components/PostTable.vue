@@ -5,13 +5,13 @@ import CardBoxModal from "@/components/CardBoxModal.vue";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import { get } from "@/stores/api.js";
+import { deleter, get } from "@/stores/api.js";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
 const router = useRouter();
-const items = ref({ message: { articles: [] } });
+const items = ref([]);
 const currentPage = ref(0);
 const perPage = ref(15);
 const numPages = ref(0);
@@ -20,14 +20,14 @@ const isModalDangerActive = ref(false);
 
 const fetchData = async () => {
   try {
-    const endpoint = `/post/list?limit=${perPage.value}&page=${
+    const endpoint = `/list/articles?limit=${perPage.value}&page=${
       currentPage.value + 1
     }`;
     const { response, status } = await get(endpoint);
 
     if (status.completed) {
-      items.value = response;
-      numPages.value = response.message.total_pages;
+      items.value = response.detail.items;
+      numPages.value = response.detail.total_pages;
     } else {
       // 处理请求错误的逻辑
     }
@@ -108,11 +108,11 @@ const redirectToEdit = (id) => {
 };
 const delhandleConfirm = async () => {
   try {
-    const endpoint = `/post/del/${postId.value}`;
-    const { response, status } = await get(endpoint);
+    const endpoint = `/articles/${postId.value}`;
+    const { response, status } = await deleter(endpoint);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error("无法进行删除:" + response.message);
       } else {
         toast.success("删除文章成功！");
@@ -147,7 +147,7 @@ const delhandleConfirm = async () => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="client in items.message.articles" :key="client.id">
+      <tr v-for="client in items" :key="client.id">
         <td data-label="id">
           {{ client.id }}
         </td>
@@ -155,7 +155,7 @@ const delhandleConfirm = async () => {
           {{ client.title }}
         </td>
         <td data-label="category">
-          {{ client.category_name }}
+          {{ client.categories[0].name }}
         </td>
         <td class="text-center" data-label="recommended">
           <span v-if="client.recommended == 1">✅</span>

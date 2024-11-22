@@ -36,6 +36,24 @@ const routes = [
   },
   {
     meta: {
+      title: "添加杂志",
+    },
+    path: "/mangazine/new",
+    component: () => import("@/views/MangazineView.vue"),
+    props: {
+      id: 0,
+    },
+  },
+  {
+    meta: {
+      title: "修改杂志",
+    },
+    path: "/mangazine/:id",
+    component: () => import("@/views/MangazineView.vue"),
+    props: true,
+  },
+  {
+    meta: {
       title: "添加文章",
     },
     path: "/post/new",
@@ -68,6 +86,13 @@ const routes = [
   },
   {
     meta: {
+      title: "杂志列表",
+    },
+    path: "/list/mangazine",
+    component: () => import("@/views/MangazineTableView.vue"),
+  },
+  {
+    meta: {
       title: "文章分类列表",
     },
     path: "/list/postcat",
@@ -95,6 +120,10 @@ const routes = [
   {
     path: "/post/",
     redirect: "/post/new",
+  },
+  {
+    path: "/mangazine/",
+    redirect: "/mangazine/new",
   },
   {
     path: "/:catchAll(.*)",

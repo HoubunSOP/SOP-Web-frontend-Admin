@@ -30,13 +30,13 @@ const newCathandleConfirm = async () => {
   try {
     const data = {
       name: newCat.value,
-      type: "文章",
+      category_type: 2,
     };
-    const endpoint = `/category/new/`;
+    const endpoint = `/categories`;
     const { response, status } = await post(endpoint, data);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error("无法创建:" + response.message);
       } else {
         toast.success("分类创建成功！请刷新此页面");

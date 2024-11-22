@@ -26,7 +26,7 @@ onMounted(async () => {
     const { response, status } = await get(endpoint);
 
     if (status.completed) {
-      if (response.status === "error") {
+      if (response.status !== 200) {
         toast.error(response.message);
       } else {
         form.comic_count = response.message.comic_count;

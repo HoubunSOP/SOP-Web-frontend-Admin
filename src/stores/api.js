@@ -76,7 +76,6 @@ export const post = async (endpoint, data) => {
   }
 };
 
-// 封装 PUT 请求
 export const put = async (endpoint, data) => {
   const status = {
     loading: true,
@@ -87,6 +86,46 @@ export const put = async (endpoint, data) => {
   try {
     const token = getAccessTokenFromCookie(); // 获取访问令牌
     const response = await api.put(endpoint, data, {
+      headers: {
+        Authorization: `Bearer ${token}`, // 添加 Authorization Bearer 头部
+      },
+    });
+    console.log("PUT 请求成功");
+    status.completed = true;
+    return { response, status };
+  } catch (error) {
+    // 默认返回一个响应结构，即使出错时也不为空
+    const response = error.response || { status: 500, data: null };
+
+    // 错误处理逻辑
+    if (response.status === 401) {
+      const errorMessage = response.data?.message || "未授权的请求";
+      if (errorMessage === "您并没有权限这样做") {
+        toast.error("您没有权限访问此页面，请登录");
+        deleteAccessTokenCookie();
+        router.push("/login");
+      }
+    }
+    status.error = true;
+    console.error("PUT 请求失败：", error);
+
+    // 返回错误时也保持结构一致
+    return { response, status };
+  }
+};
+
+
+// 封装 delete 请求
+export const deleter = async (endpoint) => {
+  const status = {
+    loading: true,
+    error: false,
+    completed: false,
+  };
+
+  try {
+    const token = getAccessTokenFromCookie(); // 获取访问令牌
+    const response = await api.delete(endpoint, {
       headers: {
         Authorization: `Bearer ${token}`, // 添加 Authorization Bearer 头部
       },
@@ -160,6 +199,7 @@ export function getAccessTokenFromCookie() {
   }
   return null;
 }
+
 // 删除 access_token Cookie
 export function deleteAccessTokenCookie() {
   document.cookie =
