@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
+import CryptoJS from "crypto-js";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
 import SectionFullScreen from "@/components/SectionFullScreen.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -10,7 +11,6 @@ import FormControl from "@/components/FormControl.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
-import { SHA256 } from "crypto-js";
 import { setAccessTokenCookie, post } from "@/stores/api.js";
 import { useToast } from "vue-toastification";
 
@@ -22,14 +22,20 @@ const form = reactive({
 });
 
 const router = useRouter();
+const AES_KEY = "?D}mznE=g^MW-i45";
 
 const submit = async () => {
-  const hashedPassword = SHA256(form.pass).toString();
+  const { encrypted_text: hashedPassword, iv: iv } = encrypt(
+    form.pass,
+    AES_KEY
+  );
   try {
     const endpoint = "/login";
     const { response, status } = await post(endpoint, {
       username: form.login,
-      password: form.pass,
+      password: hashedPassword,
+      aes: true,
+      iv: iv,
     });
 
     if (status.completed) {
@@ -45,9 +51,23 @@ const submit = async () => {
       toast.error("登录失败");
     }
   } catch (error) {
-    // 处理请求错误的逻辑
+    toast.error("登录失败:" + error.message);
   }
 };
+
+function encrypt(plain_text, key) {
+  const iv = CryptoJS.lib.WordArray.random(16); // 生成随机IV进行偏移
+  const cipher = CryptoJS.AES.encrypt(
+    plain_text,
+    CryptoJS.enc.Utf8.parse(key),
+    {
+      iv: iv, //将编码IV解码进行填充
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    }
+  );
+  return { encrypted_text: cipher.toString(), iv: iv.toString(CryptoJS.enc.Base64) }; //返回加密文本及base64编码IV
+}
 </script>
 
 <template>
