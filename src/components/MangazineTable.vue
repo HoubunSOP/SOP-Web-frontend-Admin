@@ -102,7 +102,7 @@ const handlePageClick = (page) => {
 };
 
 const redirectToExternalSite = (id) => {
-  const url = `https://www.fwgxt.top/magazine/${id}`;
+  const url = `http://127.0.0.1:3000/magazine/${id}`;
   window.open(url, "_blank");
 };
 const delhandleConfirm = async () => {

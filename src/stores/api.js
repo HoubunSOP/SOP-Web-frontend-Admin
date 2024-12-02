@@ -114,7 +114,6 @@ export const put = async (endpoint, data) => {
   }
 };
 
-
 // 封装 delete 请求
 export const deleter = async (endpoint) => {
   const status = {
@@ -142,7 +141,7 @@ export const deleter = async (endpoint) => {
       }
     }
     status.error = true;
-    toast.error("无法put数据，错误url：" + endpoint);
+    toast.error("无法delete数据，错误url：" + endpoint);
     return { error, status };
   }
 };

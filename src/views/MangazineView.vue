@@ -84,7 +84,7 @@ onMounted(async () => {
           form.name = response.detail.magazine.name;
           form.link = response.detail.magazine.link;
           form.publish_date = response.detail.magazine.publish_date;
-          form.intro = response.detail.intro;
+          form.intro = response.detail.magazine.intro;
           form.cover = response.detail.magazine.cover;
           form.category = response.detail.categories[0];
           form.comics = response.detail.comics;
@@ -212,10 +212,10 @@ const removeMangazine = (index) => {
             name="magazine"
             type="radio"
             :options="{
-              1: 'Kirara',
-              2: 'MAX',
-              3: 'Carat',
-              4: 'Forward',
+              7: 'Kirara',
+              8: 'MAX',
+              9: 'Carat',
+              10: 'Forward',
             }"
           />
         </FormField>

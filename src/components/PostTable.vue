@@ -100,7 +100,7 @@ const handlePageClick = (page) => {
 };
 
 const redirectToExternalSite = (id) => {
-  const url = `https://www.fwgxt.top/post/${id}`;
+  const url = `http://127.0.0.1:3000/post/${id}`;
   window.open(url, "_blank");
 };
 const redirectToEdit = (id) => {

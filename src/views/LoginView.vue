@@ -66,7 +66,10 @@ function encrypt(plain_text, key) {
       padding: CryptoJS.pad.Pkcs7,
     }
   );
-  return { encrypted_text: cipher.toString(), iv: iv.toString(CryptoJS.enc.Base64) }; //返回加密文本及base64编码IV
+  return {
+    encrypted_text: cipher.toString(),
+    iv: iv.toString(CryptoJS.enc.Base64),
+  }; //返回加密文本及base64编码IV
 }
 </script>
 

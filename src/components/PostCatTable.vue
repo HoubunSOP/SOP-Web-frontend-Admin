@@ -38,7 +38,7 @@ const fetchData = async () => {
 fetchData();
 
 const redirectToExternalSite = (id) => {
-  const url = `https://www.fwgxt.top/list/post?c=${id}`;
+  const url = `http://127.0.0.1:3000/list/post?c=${id}`;
   window.open(url, "_blank");
 };
 

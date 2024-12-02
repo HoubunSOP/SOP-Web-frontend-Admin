@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive } from "vue";
 import { mdiBookEdit, mdiFormatTitle } from "@mdi/js";
 import SectionMain from "@/components/SectionMain.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -10,34 +10,22 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import { useToast } from "vue-toastification";
 
-import { get, post } from "@/stores/api.js";
+import { put } from "@/stores/api.js";
 
 const toast = useToast();
 
-onMounted(async () => {
-  try {
-    const endpoint = `/index/settings`;
-    const { response, status } = await get(endpoint);
-
-    if (status.completed) {
-      if (response.status !== 200) {
-        toast.error(response.message);
-      } else {
-        form.topswiper = response.message.topswiper;
-      }
-    }
-  } catch (error) {
-    // 处理请求错误的逻辑
-  }
-});
 const form = reactive({
-  topswiper: "",
+  username: "",
+  password: "",
+  user_avatar: "",
+  user_bio: "",
+  user_position: 0,
 });
 
 const submit = async () => {
   try {
-    const endpoint = `/index/settings`;
-    const { response, status } = await post(endpoint, form);
+    const endpoint = `/users/me`;
+    const { response, status } = await put(endpoint, form);
 
     if (status.completed) {
       if (response.status !== 200) {
@@ -61,11 +49,26 @@ const submit = async () => {
       </SectionTitleLineWithButton>
 
       <CardBox is-form @submit.prevent="submit">
-        <FormField label="轮播图设置" help="输入文章id，每个id以半角逗号隔开">
+        <FormField label="修改账号">
           <FormControl
-            v-model="form.topswiper"
+            v-model="form.username"
             :icon="mdiFormatTitle"
-            placeholder="1,2,3,4"
+            placeholder="用户名"
+          />
+          <FormControl
+            v-model="form.password"
+            :icon="mdiFormatTitle"
+            placeholder="密码"
+          />
+          <FormControl
+            v-model="form.user_avatar"
+            :icon="mdiFormatTitle"
+            placeholder="用户头像(url链接)"
+          />
+          <FormControl
+            v-model="form.user_bio"
+            :icon="mdiFormatTitle"
+            placeholder="用户简介"
           />
         </FormField>
         <template #footer>

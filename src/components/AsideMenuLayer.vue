@@ -21,7 +21,7 @@ const emit = defineEmits(["menu-click", "aside-lg-close-click"]);
 const styleStore = useStyleStore();
 
 const logoutItem = computed(() => ({
-  label: "Logout",
+  label: "退出",
   icon: mdiLogout,
   color: "info",
   isLogout: true,
