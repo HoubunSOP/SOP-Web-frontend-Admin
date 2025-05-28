@@ -45,6 +45,9 @@ const form = reactive({
   author_name: "",
   cover: "https://www.dokidokivisual.com/wordpress/wp-content/themes/kiraraweb/assets/images/common/common/img_nowprinting.png",
   auto: 0,
+  cid:'',
+  isbn:0,
+  volume:1,
   category: {
     id: 0,
     name: "",
@@ -184,6 +187,23 @@ const submit = async () => {
             v-model="form.original_name"
             :icon="mdiRenameBox"
             placeholder="漫画原名"
+          />
+          <FormControl
+            v-model="form.cid"
+            :icon="mdiRenameBox"
+            placeholder="漫画原链接(指向官网)"
+          />
+          <FormControl
+            v-model="form.isbn"
+            :icon="mdiRenameBox"
+            type="number"
+            placeholder="漫画ISBN"
+          />
+          <FormControl
+            v-model="form.volume"
+            :icon="mdiRenameBox"
+            type="number"
+            placeholder="漫画卷数"
           />
         </FormField>
         <FormField
