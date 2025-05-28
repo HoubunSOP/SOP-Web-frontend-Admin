@@ -188,23 +188,6 @@ const submit = async () => {
             :icon="mdiRenameBox"
             placeholder="漫画原名"
           />
-          <FormControl
-            v-model="form.cid"
-            :icon="mdiRenameBox"
-            placeholder="漫画原链接(指向官网)"
-          />
-          <FormControl
-            v-model="form.isbn"
-            :icon="mdiRenameBox"
-            type="number"
-            placeholder="漫画ISBN"
-          />
-          <FormControl
-            v-model="form.volume"
-            :icon="mdiRenameBox"
-            type="number"
-            placeholder="漫画卷数"
-          />
         </FormField>
         <FormField
           label="漫画封面与刊物类型"
@@ -228,6 +211,29 @@ const submit = async () => {
             }"
           />
         </FormField>
+        <FormField
+          label="漫画其他信息"
+          help="漫画官网链接、ISBN号和卷数等信息"
+        >
+          <FormControl
+            v-model="form.cid"
+            :icon="mdiRenameBox"
+            placeholder="漫画原链接(指向官网)"
+          />
+          <FormControl
+            v-model="form.isbn"
+            :icon="mdiRenameBox"
+            type="number"
+            placeholder="漫画ISBN"
+          />
+          <FormControl
+            v-model="form.volume"
+            :icon="mdiRenameBox"
+            type="number"
+            placeholder="漫画卷数"
+          />
+        </FormField>
+
         <template #footer>
           <BaseButton type="submit" color="info" label="保存" />
         </template>
