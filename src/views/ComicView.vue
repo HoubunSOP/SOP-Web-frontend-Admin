@@ -90,6 +90,9 @@ onMounted(async () => {
           form.cover = response.detail.cover;
           form.author_name = response.detail.author.name;
           form.category = response.detail.categories[0];
+          form.cid = response.detail.cid;
+          form.isbn = response.detail.isbn;
+          form.volume = response.detail.volume;
           console.log(form);
         }
       }
