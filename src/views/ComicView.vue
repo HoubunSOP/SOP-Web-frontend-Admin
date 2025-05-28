@@ -43,7 +43,7 @@ const form = reactive({
   date: getCurrentDate(),
   intro: "",
   author_name: "",
-  cover: "https://houbunsha.co.jp/img/mv_img/con_item_nPrn_1.png",
+  cover: "https://www.dokidokivisual.com/wordpress/wp-content/themes/kiraraweb/assets/images/common/common/img_nowprinting.png",
   auto: 0,
   category: {
     id: 0,
